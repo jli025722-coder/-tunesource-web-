@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tune-Source Music</title>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+        nav{background:#222;color:white;padding:16px;display:flex;gap:24px;align-items:center}
+        nav a{color:white;text-decoration:none}
+        .container{max-width:1100px;margin:30px auto;padding:0 20px}
+        .search-bar{display:flex;gap:8px;margin-bottom:30px}
+        #search-input{flex:1;padding:10px;font-size:16px}
+        button{padding:10px 16px;background:#2563eb;color:white;border:none;border-radius:4px;cursor:pointer}
+        .music-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+        .card{border:1px solid #ddd;padding:16px;border-radius:8px}
+        .card h3{margin:8px 0}
+        .card p{color:#666;margin-bottom:12px}
+    </style>
+</head>
+<body>
+<nav>
+    <h2>Tune-Source</h2>
+    <a href="/">Home</a>
+    <a href="/history">Download History</a>
+    <a href="/admin">Admin</a>
+</nav>
+<div class="container">
+    <div class="search-bar">
+        <input id="search-input" placeholder="Search music / artist">
+        <button onclick="search()">Search</button>
+    </div>
+    <div class="music-grid" id="music-box">
+        {% for m in music %}
+        <div class="card">
+            <h3>{{m.title}}</h3>
+            <p>{{m.artist}}</p>
+            <button onclick="download('{{m.title}}')">Download</button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<script>
+    function search(){
+        let kw = document.getElementById("search-input").value
+        fetch(`/api/search?kw=${kw}`)
+        .then(r=>r.json())
+        .then(data=>{
+            let html = ""
+            data.forEach(m=>{
+                html += `<div class="card"><h3>${m.title}</h3><p>${m.artist}</p><button onclick="download('${m.title}')">Download</button></div>`
+            })
+            document.getElementById("music-box").innerHTML = html
+        })
+    }
+    function download(title){
+        fetch("/api/download",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({title:title})
+        }).then(()=>alert("Download added to history!"))
+    }
+</script>
+</body>
+</html>

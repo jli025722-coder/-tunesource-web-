@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Download History</title>
+    <style>
+        *{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+        nav{background:#222;color:white;padding:16px;display:flex;gap:24px;align-items:center}
+        nav a{color:white;text-decoration:none}
+        .container{max-width:800px;margin:30px auto;padding:0 20px}
+        .item{padding:12px;border-bottom:1px solid #ddd}
+    </style>
+</head>
+<body>
+<nav>
+    <h2>Tune-Source</h2>
+    <a href="/">Home</a>
+    <a href="/history">Download History</a>
+    <a href="/admin">Admin</a>
+</nav>
+<div class="container">
+    <h2>Your Download History</h2>
+    {% if records|length ==0 %}
+    <p>No download records yet</p>
+    {% endif %}
+    {% for r in records %}
+    <div class="item">
+        <p>Music: {{r.music_title}} | Time: {{r.time}}</p>
+    </div>
+    {% endfor %}
+</div>
+</body>
+</html>
