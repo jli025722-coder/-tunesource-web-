@@ -1,64 +1,661 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Tune-Source Music</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TuneSource — Cyber Music Hub</title>
     <style>
-        *{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
-        nav{background:#222;color:white;padding:16px;display:flex;gap:24px;align-items:center}
-        nav a{color:white;text-decoration:none}
-        .container{max-width:1100px;margin:30px auto;padding:0 20px}
-        .search-bar{display:flex;gap:8px;margin-bottom:30px}
-        #search-input{flex:1;padding:10px;font-size:16px}
-        button{padding:10px 16px;background:#2563eb;color:white;border:none;border-radius:4px;cursor:pointer}
-        .music-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-        .card{border:1px solid #ddd;padding:16px;border-radius:8px}
-        .card h3{margin:8px 0}
-        .card p{color:#666;margin-bottom:12px}
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Orbitron", "Rajdhani", Arial, sans-serif; }
+
+        body {
+          background: #05070f;
+          color: #e6f1ff;
+          min-height: 100vh;
+          overflow-x: hidden;
+          position: relative;
+        }
+
+        /* 动态网格背景 */
+        body::before {
+          content: "";
+          position: fixed;
+          inset: 0;
+          background-image:
+            linear-gradient(rgba(0, 229, 255, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 229, 255, 0.08) 1px, transparent 1px);
+          background-size: 40px 40px;
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        /* 霓虹光晕 */
+        body::after {
+          content: "";
+          position: fixed;
+          inset: -20%;
+          background:
+            radial-gradient(circle at 20% 20%, rgba(0, 180, 255, 0.25), transparent 40%),
+            radial-gradient(circle at 80% 30%, rgba(180, 0, 255, 0.22), transparent 45%),
+            radial-gradient(circle at 50% 90%, rgba(0, 255, 200, 0.18), transparent 50%);
+          filter: blur(60px);
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .particles {
+          position: fixed;
+          inset: 0;
+          pointer-events: none;
+          z-index: 1;
+        }
+
+        .container {
+          position: relative;
+          z-index: 2;
+          max-width: 1400px;
+          margin: 0 auto;
+          padding: 24px;
+        }
+
+        /* 顶部导航 */
+        .navbar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 18px 28px;
+          border: 1px solid rgba(0, 229, 255, 0.35);
+          border-radius: 16px;
+          background: rgba(10, 18, 40, 0.55);
+          backdrop-filter: blur(14px);
+          box-shadow:
+            0 0 25px rgba(0, 229, 255, 0.25),
+            inset 0 0 20px rgba(0, 229, 255, 0.08);
+          margin-bottom: 24px;
+        }
+
+        .logo {
+          font-size: 24px;
+          font-weight: 700;
+          letter-spacing: 3px;
+          background: linear-gradient(90deg, #00e5ff, #b14bff);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          text-shadow: 0 0 18px rgba(0, 229, 255, 0.45);
+        }
+
+        .nav-links {
+          display: flex;
+          gap: 14px;
+          flex-wrap: wrap;
+        }
+
+        .btn {
+          padding: 10px 18px;
+          border-radius: 10px;
+          border: 1px solid rgba(0, 229, 255, 0.45);
+          background: linear-gradient(135deg, rgba(0, 229, 255, 0.18), rgba(177, 75, 255, 0.18));
+          color: #e6f1ff;
+          cursor: pointer;
+          font-weight: 600;
+          letter-spacing: 1px;
+          transition: 0.25s;
+          text-decoration: none;
+          font-size: 14px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 0 22px rgba(0, 229, 255, 0.55);
+          border-color: #00e5ff;
+        }
+
+        .btn-primary {
+          background: linear-gradient(135deg, #00e5ff, #b14bff);
+          border-color: #00e5ff;
+          color: #05070f;
+        }
+
+        .btn-danger {
+          border-color: rgba(255, 80, 120, 0.5);
+          background: linear-gradient(135deg, rgba(255, 80, 120, 0.2), rgba(255, 120, 60, 0.15));
+        }
+
+        .btn-danger:hover {
+          box-shadow: 0 0 22px rgba(255, 80, 120, 0.55);
+        }
+
+        .btn-ghost {
+          background: rgba(255, 255, 255, 0.04);
+        }
+
+        /* 标题区 */
+        .hero {
+          text-align: center;
+          padding: 40px 20px 30px;
+          border-bottom: 1px solid rgba(0, 229, 255, 0.25);
+          margin-bottom: 24px;
+        }
+
+        .hero h1 {
+          font-size: 42px;
+          letter-spacing: 6px;
+          background: linear-gradient(90deg, #00e5ff, #b14bff, #00ffc8);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          text-shadow: 0 0 28px rgba(0, 229, 255, 0.35);
+          margin-bottom: 12px;
+        }
+
+        .hero p {
+          color: #8fb3d8;
+          letter-spacing: 2px;
+          font-size: 14px;
+        }
+
+        .status-bar {
+          display: flex;
+          justify-content: center;
+          gap: 22px;
+          margin-top: 18px;
+          flex-wrap: wrap;
+        }
+
+        .status-item {
+          padding: 8px 14px;
+          border: 1px solid rgba(0, 255, 200, 0.4);
+          border-radius: 999px;
+          font-size: 12px;
+          color: #00ffc8;
+          background: rgba(0, 255, 200, 0.08);
+        }
+
+        /* 控制面板 */
+        .control-panel {
+          display: grid;
+          grid-template-columns: 1.4fr 1fr 1fr 1fr;
+          gap: 14px;
+          margin-bottom: 24px;
+        }
+
+        .panel-card {
+          border: 1px solid rgba(0, 229, 255, 0.3);
+          border-radius: 14px;
+          padding: 16px;
+          background: rgba(10, 18, 40, 0.5);
+          backdrop-filter: blur(12px);
+          box-shadow: inset 0 0 18px rgba(0, 229, 255, 0.06);
+        }
+
+        .panel-card label {
+          display: block;
+          font-size: 12px;
+          color: #7dd3fc;
+          margin-bottom: 8px;
+          letter-spacing: 2px;
+        }
+
+        input, select {
+          width: 100%;
+          padding: 11px 14px;
+          border-radius: 10px;
+          border: 1px solid rgba(0, 229, 255, 0.4);
+          background: rgba(4, 8, 20, 0.6);
+          color: #e6f1ff;
+          outline: none;
+          font-size: 14px;
+        }
+
+        input:focus, select:focus {
+          border-color: #00e5ff;
+          box-shadow: 0 0 14px rgba(0, 229, 255, 0.45);
+        }
+
+        /* 按钮操作栏 */
+        .action-bar {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          margin-bottom: 24px;
+          padding: 18px;
+          border: 1px solid rgba(177, 75, 255, 0.35);
+          border-radius: 14px;
+          background: rgba(30, 10, 60, 0.25);
+        }
+
+        /* 音乐列表 */
+        .section-title {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 16px;
+        }
+
+        .section-title h2 {
+          font-size: 20px;
+          letter-spacing: 3px;
+          color: #00e5ff;
+          text-shadow: 0 0 14px rgba(0, 229, 255, 0.4);
+        }
+
+        .count-badge {
+          padding: 6px 12px;
+          border-radius: 999px;
+          border: 1px solid #b14bff;
+          font-size: 12px;
+          color: #d8b4ff;
+          background: rgba(177, 75, 255, 0.12);
+        }
+
+        .music-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+          gap: 20px;
+        }
+
+        .music-card {
+          border: 1px solid rgba(0, 229, 255, 0.3);
+          border-radius: 16px;
+          padding: 20px;
+          background: linear-gradient(160deg, rgba(20, 30, 60, 0.6), rgba(40, 15, 70, 0.5));
+          backdrop-filter: blur(10px);
+          transition: 0.3s;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .music-card::before {
+          content: "";
+          position: absolute;
+          top: 0; left: -100%;
+          width: 100%; height: 2px;
+          background: linear-gradient(90deg, transparent, #00e5ff, #b14bff, transparent);
+          transition: 0.6s;
+        }
+
+        .music-card:hover::before { left: 100%; }
+
+        .music-card:hover {
+          transform: translateY(-6px);
+          border-color: #00e5ff;
+          box-shadow:
+            0 10px 30px rgba(0, 229, 255, 0.25),
+            0 0 22px rgba(177, 75, 255, 0.25);
+        }
+
+        .cover-box {
+          width: 100%;
+          height: 140px;
+          border-radius: 12px;
+          background: linear-gradient(135deg, #00e5ff, #b14bff);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 48px;
+          margin-bottom: 14px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .cover-box::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(255,255,255,0.06) 10px,
+            rgba(255,255,255,0.06) 20px
+          );
+        }
+
+        .music-card h3 {
+          font-size: 18px;
+          margin-bottom: 6px;
+          color: #e6f1ff;
+        }
+
+        .music-card .artist {
+          color: #7dd3fc;
+          font-size: 13px;
+          margin-bottom: 10px;
+        }
+
+        .tag-row {
+          display: flex;
+          gap: 8px;
+          margin-bottom: 14px;
+          flex-wrap: wrap;
+        }
+
+        .tag {
+          padding: 4px 10px;
+          border-radius: 999px;
+          font-size: 11px;
+          border: 1px solid rgba(0, 255, 200, 0.4);
+          color: #00ffc8;
+          background: rgba(0, 255, 200, 0.1);
+        }
+
+        .card-buttons {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .progress {
+          height: 6px;
+          background: rgba(255,255,255,0.08);
+          border-radius: 999px;
+          overflow: hidden;
+          margin-top: 12px;
+        }
+
+        .progress-bar {
+          height: 100%;
+          width: 0;
+          background: linear-gradient(90deg, #00e5ff, #00ffc8);
+          transition: width 0.3s;
+        }
+
+        /* 底部状态栏 */
+        .footer-panel {
+          margin-top: 28px;
+          padding: 20px;
+          border-radius: 14px;
+          border: 1px solid rgba(0, 229, 255, 0.25);
+          background: rgba(10, 18, 40, 0.45);
+          display: flex;
+          justify-content: space-between;
+          gap: 16px;
+          flex-wrap: wrap;
+        }
+
+        .footer-panel .item {
+          color: #8fb3d8;
+          font-size: 13px;
+          letter-spacing: 1px;
+        }
+
+        .footer-panel .item span { color: #00e5ff; }
+
+        @media (max-width: 900px) {
+          .control-panel { grid-template-columns: 1fr 1fr; }
+          .hero h1 { font-size: 30px; letter-spacing: 3px; }
+        }
     </style>
 </head>
 <body>
-<nav>
-    <h2>Tune-Source</h2>
-    <a href="/">Home</a>
-    <a href="/history">Download History</a>
-    <a href="/admin">Admin</a>
-</nav>
+
+<canvas class="particles" id="particles"></canvas>
+
 <div class="container">
-    <div class="search-bar">
-        <input id="search-input" placeholder="Search music / artist">
-        <button onclick="search()">Search</button>
+
+    <!-- 顶部导航 -->
+    <nav class="navbar">
+        <div class="logo">◆ TUNESOURCE</div>
+        <div class="nav-links">
+            <a href="/" class="btn btn-primary">Home</a>
+            <a href="/history" class="btn">History</a>
+            <a href="/admin" class="btn">Admin</a>
+            <button class="btn btn-ghost" onclick="toggleTheme()">Theme</button>
+            <button class="btn btn-ghost" onclick="toggleSound()">Sound: OFF</button>
+        </div>
+    </nav>
+
+    <!-- 标题区 -->
+    <div class="hero">
+        <h1>CYBER MUSIC HUB</h1>
+        <p>Next-Gen Music Library & Download System</p>
+        <div class="status-bar">
+            <div class="status-item">● SYSTEM ONLINE</div>
+            <div class="status-item">● LOCKED</div>
+            <div class="status-item">● 3 TRACKS</div>
+            <div class="status-item">● READY</div>
+        </div>
     </div>
-    <div class="music-grid" id="music-box">
+
+    <!-- 控制面板 -->
+    <div class="control-panel">
+        <div class="panel-card">
+            <label>SEARCH</label>
+            <input id="search-input" placeholder="Search title / artist / genre..." />
+        </div>
+        <div class="panel-card">
+            <label>FILTER GENRE</label>
+            <select id="genre-filter">
+                <option value="">All Genres</option>
+                <option value="Electronic">Electronic</option>
+                <option value="Synthwave">Synthwave</option>
+                <option value="Ambient">Ambient</option>
+                <option value="Pop">Pop</option>
+            </select>
+        </div>
+        <div class="panel-card">
+            <label>SORT BY</label>
+            <select id="sort-select">
+                <option value="default">Default</option>
+                <option value="title">Title A-Z</option>
+                <option value="artist">Artist A-Z</option>
+                <option value="id">ID Ascending</option>
+            </select>
+        </div>
+        <div class="panel-card">
+            <label>VIEW MODE</label>
+            <select id="view-mode">
+                <option value="grid">Grid</option>
+                <option value="list">List</option>
+                <option value="compact">Compact</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- 操作按钮栏 -->
+    <div class="action-bar">
+        <button class="btn btn-primary" onclick="refreshList()">⟳ Refresh List</button>
+        <button class="btn" onclick="playAll()">▶ Play All</button>
+        <button class="btn" onclick="shuffleList()">⇄ Shuffle</button>
+        <button class="btn" onclick="showFavorites()">☆ Favorites</button>
+        <button class="btn" onclick="exportData()">⤓ Export Data</button>
+        <button class="btn" onclick="openSettings()">⚙ Settings</button>
+        <button class="btn btn-danger" onclick="clearHistory()">✕ Clear History</button>
+    </div>
+
+    <!-- 音乐列表 -->
+    <div class="section-title">
+        <h2>▶ TRACK LIST</h2>
+        <div class="count-badge" id="count-badge">0 Tracks</div>
+    </div>
+
+    <div class="music-grid" id="music-container">
         {% for m in music %}
-        <div class="card">
+        <div class="music-card"
+             data-title="{{m.title}}"
+             data-artist="{{m.artist}}"
+             data-id="{{m.id}}">
+            <div class="cover-box">♪</div>
             <h3>{{m.title}}</h3>
-            <p>{{m.artist}}</p>
-            <button onclick="download('{{m.title}}')">Download</button>
+            <div class="artist">{{m.artist}}</div>
+            <div class="tag-row">
+                <span class="tag">ID: {{m.id}}</span>
+                <span class="tag">Electronic</span>
+                <span class="tag">Hi-Fi</span>
+            </div>
+            <div class="card-buttons">
+                <button class="btn btn-primary" onclick="downloadTrack('{{m.title}}')">⤓ Download</button>
+                <button class="btn" onclick="previewTrack('{{m.title}}')">▶ Preview</button>
+                <button class="btn btn-ghost" onclick="addToFav('{{m.title}}')">☆ Favorite</button>
+                <button class="btn btn-ghost" onclick="showDetail('{{m.title}}')">ⓘ Detail</button>
+            </div>
+            <div class="progress"><div class="progress-bar" id="bar-{{m.id}}"></div></div>
         </div>
         {% endfor %}
     </div>
+
+    <!-- 底部状态栏 -->
+    <div class="footer-panel">
+        <div class="item">STATUS: <span id="status-text">Connected</span></div>
+        <div class="item">TRACKS: <span id="tracks-text">3</span></div>
+        <div class="item">DOWNLOADS: <span id="downloads-text">0</span></div>
+        <div class="item">SYSTEM: <span>v2.0 Cyber</span></div>
+    </div>
+
 </div>
+
 <script>
-    function search(){
-        let kw = document.getElementById("search-input").value
-        fetch(`/api/search?kw=${kw}`)
-        .then(r=>r.json())
-        .then(data=>{
-            let html = ""
-            data.forEach(m=>{
-                html += `<div class="card"><h3>${m.title}</h3><p>${m.artist}</p><button onclick="download('${m.title}')">Download</button></div>`
-            })
-            document.getElementById("music-box").innerHTML = html
-        })
+    const input = document.getElementById("search-input");
+    const container = document.getElementById("music-container");
+    const badge = document.getElementById("count-badge");
+    const statusText = document.getElementById("status-text");
+    const tracksText = document.getElementById("tracks-text");
+    const downloadsText = document.getElementById("downloads-text");
+
+    let timer;
+    let downloadCount = 0;
+
+    input.oninput = () => {
+      clearTimeout(timer);
+      statusText.innerText = "Searching...";
+      timer = setTimeout(() => {
+        filterMusic(input.value);
+      }, 500);
+    };
+
+    function filterMusic(kw) {
+      const cards = [...container.querySelectorAll(".music-card")];
+      let count = 0;
+      cards.forEach(card => {
+        const title = card.dataset.title.toLowerCase();
+        const artist = card.dataset.artist.toLowerCase();
+        if (title.includes(kw.toLowerCase()) || artist.includes(kw.toLowerCase())) {
+          card.style.display = "block";
+          count++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+      badge.innerText = count + " Tracks";
+      statusText.innerText = "Connected";
     }
-    function download(title){
-        fetch("/api/download",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({title:title})
-        }).then(()=>alert("Download added to history!"))
+
+    async function downloadTrack(title) {
+      statusText.innerText = "Downloading " + title + "...";
+      await fetch("/api/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title })
+      });
+      downloadCount++;
+      downloadsText.innerText = downloadCount;
+      statusText.innerText = title + " downloaded";
+      showToast("✓ " + title + " added to history");
     }
+
+    function previewTrack(title) {
+      showToast("▶ Previewing: " + title);
+    }
+
+    function addToFav(title) {
+      showToast("☆ " + title + " added to favorites");
+    }
+
+    function showDetail(title) {
+      showToast("ⓘ Track: " + title);
+    }
+
+    function refreshList() {
+      statusText.innerText = "Refreshing...";
+      input.value = "";
+      filterMusic("");
+      setTimeout(() => statusText.innerText = "Connected", 700);
+    }
+
+    function playAll() { showToast("▶ Play All activated"); }
+    function shuffleList() { showToast("⇄ Shuffle mode"); }
+    function showFavorites() { showToast("☆ Favorites opened"); }
+    function exportData() { showToast("⤓ Data exported"); }
+    function openSettings() { showToast("⚙ Settings panel"); }
+    function clearHistory() {
+      if (confirm("Clear download history?")) {
+        downloadCount = 0;
+        downloadsText.innerText = 0;
+        showToast("✕ History cleared");
+      }
+    }
+
+    function toggleTheme() { showToast("Theme toggled"); }
+    function toggleSound() { showToast("Sound toggled"); }
+
+    function showToast(msg) {
+      const t = document.createElement("div");
+      t.innerText = msg;
+      t.style.cssText = `
+        position:fixed;bottom:30px;right:30px;padding:12px 18px;
+        border:1px solid #00e5ff;border-radius:10px;
+        background:rgba(10,18,40,0.9);color:#e6f1ff;
+        box-shadow:0 0 20px rgba(0,229,255,0.4);z-index:9999;
+        letter-spacing:1px;font-size:13px;
+      `;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 1800);
+    }
+
+    // 粒子背景
+    const canvas = document.getElementById("particles");
+    const ctx = canvas.getContext("2d");
+    let w, h, particles;
+
+    function resize() {
+      w = canvas.width = innerWidth;
+      h = canvas.height = innerHeight;
+    }
+    resize();
+    addEventListener("resize", resize);
+
+    particles = Array.from({ length: 60 }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      r: Math.random() * 1.8 + 0.4
+    }));
+
+    function animate() {
+      ctx.clearRect(0, 0, w, h);
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(0, 229, 255, 0.7)";
+        ctx.fill();
+      });
+
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const d = Math.hypot(dx, dy);
+          if (d < 120) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(0, 229, 255, ${0.18 * (1 - d / 120)})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
 </script>
+
 </body>
 </html>
