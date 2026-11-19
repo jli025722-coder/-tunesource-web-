@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, render_template
 import datetime
 
 app = Flask(__name__)
+SITE_DOMAIN = "https://tunesource-web.onrender.com"
 
 music_list = [
     {"id":1, "title":"Sunny Day", "artist":"Alice", "cover":"cover1.jpg", "url":"#"},
@@ -37,6 +38,25 @@ def add_download():
     }
     download_records.append(record)
     return jsonify({"msg":"success"})
+
+@app.route('/robots.txt')
+def robots():
+    txt = f"""User-agent: *
+Allow: /
+Sitemap: {SITE_DOMAIN}/sitemap.xml
+"""
+    return txt, 200, {"Content-Type": "text/plain"}
+
+@app.route('/sitemap.xml')
+def sitemap():
+    xml = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    xml += f"<url><loc>{SITE_DOMAIN}/</loc></url>\n"
+    xml += f"<url><loc>{SITE_DOMAIN}/history</loc></url>\n"
+    xml += f"<url><loc>{SITE_DOMAIN}/admin</loc></url>\n"
+    for m in music_list:
+        xml += f"<url><loc>{SITE_DOMAIN}/</loc></url>\n"
+    xml += "</urlset>"
+    return xml, 200, {"Content-Type": "application/xml"}
 
 if __name__ == '__main__':
     app.run(debug=True)
