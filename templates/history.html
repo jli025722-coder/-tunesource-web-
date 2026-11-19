@@ -1,33 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Download History</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TuneSource — Download History Log</title>
     <style>
-        *{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
-        nav{background:#222;color:white;padding:16px;display:flex;gap:24px;align-items:center}
-        nav a{color:white;text-decoration:none}
-        .container{max-width:800px;margin:30px auto;padding:0 20px}
-        .item{padding:12px;border-bottom:1px solid #ddd}
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Orbitron",Arial,sans-serif; }
+        body {
+          background: #05070f;
+          color: #e6f1ff;
+          min-height:100vh;
+          position:relative;
+        }
+        body::before {
+          content:"";
+          position:fixed;inset:0;
+          background-image:
+            linear-gradient(rgba(0, 229, 255, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 229, 255, 0.08) 1px, transparent 1px);
+          background-size:40px 40px;
+          pointer-events:none;z-index:0;
+        }
+        body::after{
+          content:"";position:fixed;inset:-20%;
+          background:radial-gradient(circle at 20% 20%,rgba(0,180,255,0.25),transparent 40%),
+          radial-gradient(circle at 80% 30%,rgba(180,0,255,0.22),transparent 45%);
+          filter:blur(60px);pointer-events:none;z-index:0;
+        }
+        .container{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:24px;}
+        .navbar{
+          display:flex;justify-content:space-between;align-items:center;
+          padding:18px 28px;border:1px solid rgba(0,229,255,0.35);
+          border-radius:16px;background:rgba(10,18,40,0.55);backdrop-filter:blur(14px);
+          box-shadow:0 0 25px rgba(0,229,255,0.25);margin-bottom:24px;
+        }
+        .logo{font-size:24px;font-weight:700;letter-spacing:3px;
+          background:linear-gradient(90deg,#00e5ff,#b14bff);
+          -webkit-background-clip:text;background-clip:text;color:transparent;
+        }
+        .nav-links{display:flex;gap:14px;flex-wrap:wrap;}
+        .btn{
+          padding:10px 18px;border-radius:10px;border:1px solid rgba(0,229,255,0.45);
+          background:linear-gradient(135deg,rgba(0,229,255,0.18),rgba(177,75,255,0.18));
+          color:#e6f1ff;text-decoration:none;cursor:pointer;font-weight:600;
+          letter-spacing:1px;transition:0.25s;font-size:14px;
+        }
+        .btn:hover{transform:translateY(-2px);box-shadow:0 0 22px rgba(0,229,255,0.55);}
+        .page-header{margin-bottom:24px;}
+        .page-header h1{
+          font-size:32px;letter-spacing:4px;
+          background:linear-gradient(90deg,#00e5ff,#b14bff);
+          -webkit-background-clip:text;background-clip:text;color:transparent;
+          margin-bottom:8px;
+        }
+        .log-card{
+          border:1px solid rgba(0,229,255,0.3);border-radius:14px;
+          background:rgba(10,18,40,0.5);backdrop-filter:blur(12px);
+          padding:18px;margin-bottom:12px;display:flex;justify-content:space-between;
+        }
+        .empty-box{text-align:center;padding:60px;border:1px dashed rgba(0,229,255,0.3);border-radius:14px;color:#7dd3fc;}
     </style>
 </head>
 <body>
-<nav>
-    <h2>Tune-Source</h2>
-    <a href="/">Home</a>
-    <a href="/history">Download History</a>
-    <a href="/admin">Admin</a>
-</nav>
 <div class="container">
-    <h2>Your Download History</h2>
+    <nav class="navbar">
+        <div class="logo">◆ TUNESOURCE</div>
+        <div class="nav-links">
+            <a href="/" class="btn">Home</a>
+            <a href="/history" class="btn">Download History</a>
+            <a href="/admin" class="btn">Admin Panel</a>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <h1>DOWNLOAD HISTORY LOG</h1>
+        <p style="color:#8fb3d8">Record of all user download operations</p>
+    </div>
+
     {% if records|length ==0 %}
-    <p>No download records yet</p>
+    <div class="empty-box">
+        <h3>No download records available</h3>
+        <p>Go home page to download music tracks.</p>
+    </div>
     {% endif %}
+
     {% for r in records %}
-    <div class="item">
-        <p>Music: {{r.music_title}} | Time: {{r.time}}</p>
+    <div class="log-card">
+        <div><strong>Track:</strong> {{r.music_title}}</div>
+        <div><strong>Timestamp:</strong> {{r.time}}</div>
     </div>
     {% endfor %}
+
 </div>
 </body>
 </html>
