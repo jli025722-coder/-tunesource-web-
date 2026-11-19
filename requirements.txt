@@ -1,2 +1,5 @@
 Flask==2.3.3
+<<<<<<< HEAD
+=======
 gunicorn
+>>>>>>> fc88fa0 (Add gunicorn for render deployment)
