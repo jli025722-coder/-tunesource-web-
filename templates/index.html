@@ -1,13 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>TuneSource — Скачивание музыки | Онлайн музыкальная библиотека</title>
-        <meta name="description" content="TuneSource — кибер музыкальный хаб, здесь можно искать и скачивать электронную музыку, слушать треки онлайн. Большая музыкальная библиотека с быстрым доступом." />
-        <meta name="keywords" content="музыка, скачивание музыки, треки, онлайн музыка, музыкальная библиотека, скачать музыку онлайн бесплатно, электронная музыка для скачивания, найти музыкальный трек онлайн, кибер музыка для прослушивания, музыкальный сайт для скачивания">
-        <style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TuneSource — Скачивание музыки | Онлайн музыкальная библиотека</title>
+    <meta name="description" content="TuneSource — кибер музыкальный хаб, здесь можно искать и скачивать электронную музыку, слушать треки онлайн. Большая музыкальная библиотека с быстрым доступом." />
+    <meta name="keywords" content="музыка, скачивание музыки, треки, онлайн музыка, музыкальная библиотека, скачать музыку онлайн бесплатно, электронная музыка для скачивания, найти музыкальный трек онлайн, кибер музыка для прослушивания, музыкальный сайт для скачивания">
+
+    <!-- ========= Yandex Metrica Counter (Yandex API) ========= -->
+    <script>
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+        ym(XXXXXX, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true
+        });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/XXXXXX" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+
+    <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Orbitron", "Rajdhani", Arial, sans-serif; }
 
         body {
@@ -386,18 +400,44 @@
 
         .footer-panel .item span { color: #00e5ff; }
 
+        /* Counter Card 新增样式 */
+        .counter-card{
+          margin-top:16px;
+          padding:16px;
+          border:1px solid rgba(177, 75, 255, 0.3);
+          border-radius:14px;
+          background:rgba(10, 18, 40, 0.45);
+          display:grid;
+          grid-template-columns: 1fr 1fr;
+          gap:16px;
+        }
+        .counter-block{
+          border:1px solid rgba(0, 229, 255, 0.3);
+          border-radius:12px;
+          padding:14px;
+          background:rgba(20,30,60,0.4);
+        }
+        .counter-block h4{
+          color:#00e5ff;
+          margin-bottom:8px;
+          font-size:14px;
+          letter-spacing:1px;
+        }
+        .counter-block p{
+          color:#e6f1ff;
+          font-size:16px;
+        }
+
         @media (max-width: 900px) {
           .control-panel { grid-template-columns: 1fr 1fr; }
           .hero h1 { font-size: 30px; letter-spacing: 3px; }
+          .counter-card{grid-template-columns:1fr;}
         }
     </style>
 </head>
 <body>
-
 <canvas class="particles" id="particles"></canvas>
-
 <div class="container">
-
     <!-- 顶部导航 -->
     <nav class="navbar">
         <div class="logo">◆ TUNESOURCE</div>
@@ -505,6 +545,18 @@
         <div class="item">TRACKS: <span id="tracks-text">3</span></div>
         <div class="item">DOWNLOADS: <span id="downloads-text">0</span></div>
         <div class="item">SYSTEM: <span>v2.0 Cyber</span></div>
+    </div>
+
+    <!-- ========== 两个计数器展示模块（作业要求） ========== -->
+    <div class="counter-card">
+        <div class="counter-block">
+            <h4>Self-written JS Counter</h4>
+            <p>Visits: <span id="jsVisitCounter">0</span></p>
+        </div>
+        <div class="counter-block">
+            <h4>Yandex Metrica API Counter</h4>
+            <p>Stats collected by Yandex Metrica dashboard</p>
+        </div>
     </div>
 
 </div>
@@ -658,7 +710,19 @@
       requestAnimationFrame(animate);
     }
     animate();
-</script>
 
+    // ========== 自研JS访问计数器（作业要求） ==========
+    function initVisitCounter(){
+        let visitCount = localStorage.getItem("visitCount");
+        if(visitCount === null){
+            visitCount = 1;
+        }else{
+            visitCount = parseInt(visitCount) + 1;
+        }
+        localStorage.setItem("visitCount", visitCount);
+        document.getElementById("jsVisitCounter").innerText = visitCount;
+    }
+    initVisitCounter();
+</script>
 </body>
 </html>
